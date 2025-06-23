@@ -8,16 +8,17 @@ import { Sequelize } from 'sequelize';
 dotenv.config();
 
 // Инициализация Sequelize
-const sequelize = new Sequelize(
-    process.env.SUBD_DB_NAME || 'recipes_db',
-    process.env.SUBD_DB_USER || 'postgres',
-    process.env.SUBD_DB_PASS || 'mysecretpassword',
-    {
-        host: process.env.SUBD_DB_HOST || 'localhost',
-        dialect: 'postgres',
-        logging: console.log
-    }
-);
+const sequelize = new Sequelize(process.env.DATABASE_URL || '', {
+    dialect: 'postgres',
+    protocol: 'postgres',
+    dialectOptions: {
+        ssl: process.env.NODE_ENV === 'production' ? {
+            require: true,
+            rejectUnauthorized: false
+        } : false
+    },
+    logging: console.log
+});
 
 // Проверка подключения
 (async () => {

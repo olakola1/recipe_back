@@ -16,5 +16,5 @@ services:
           property: connectionString
       - key: NODE_ENV
         value: production
-      - key: PROD_PORT
+      - key: PORT
         value: 10000
