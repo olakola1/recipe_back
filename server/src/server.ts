@@ -8,7 +8,10 @@ const app = express();
 
 // Middleware
 app.use(cors({
-    origin: process.env.CORS_ORIGIN || 'http://localhost:5173',
+    origin: [
+        'http://localhost:5173', // Локальная разработка
+        'https://recipe-font.vercel.app' // Ваш домен на Vercel
+    ],
     methods: ['GET', 'POST', 'PATCH', 'DELETE'],
     allowedHeaders: ['Content-Type'],
     credentials: true
