@@ -1,0 +1,39 @@
+services:
+  postgres:
+    image: postgres:13
+    container_name: recipe_db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: mysecretpassword
+      POSTGRES_DB: recipes_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  server:
+    build: ..
+    container_name: recipe_server
+    ports:
+      - "5000:5000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: recipes_db
+      DB_USER: postgres
+      DB_PASSWORD: mysecretpassword
+    volumes:
+      - ./server:/server
+      - /server/node_modules
+    working_dir: /server
+
+volumes:
+  postgres_data:
