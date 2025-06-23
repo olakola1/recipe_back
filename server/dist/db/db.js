@@ -10,10 +10,11 @@ dotenv_1.default.config();
 const sequelize = new sequelize_1.Sequelize(process.env.DATABASE_URL || '', {
     dialect: 'postgres',
     dialectOptions: {
-        ssl: process.env.NODE_ENV === 'production' ? {
+        ssl: {
             require: true,
-            rejectUnauthorized: false
-        } : false
-    }
+            rejectUnauthorized: false // Это важно для Render PostgreSQL
+        }
+    },
+    logging: console.log // Для отладки
 });
 exports.sequelize = sequelize;
