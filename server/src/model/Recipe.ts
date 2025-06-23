@@ -1,7 +1,6 @@
 import { DataTypes, Model, Optional } from "sequelize";
-import { sequelize } from "../server";
+import { sequelize } from "../db/db"; // Импортируем из нового файла
 
-// Интерфейсы для типизации
 interface RecipeAttributes {
     id: number;
     title: string;
@@ -71,5 +70,4 @@ export class Recipe extends Model<RecipeAttributes, RecipeCreationAttributes>
     }
 }
 
-// Инициализация модели
-Recipe.initialize();
+export default Recipe;
