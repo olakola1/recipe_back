@@ -1,37 +1,21 @@
 import express, { Request, Response, NextFunction } from 'express';
 import cors from 'cors';
 import path from 'path';
-import { sequelize } from './db/db'; // Импорт из нашего файла
+import { sequelize, initializeDatabase } from './db/db';
 import router from './routes/recipe';
 
-// Инициализация Express
 const app = express();
 
 // Middleware
 app.use(cors({
     origin: process.env.CORS_ORIGIN || 'http://localhost:5173',
     methods: ['GET', 'POST', 'PATCH', 'DELETE'],
-    allowedHeaders: ['Content-Type']
+    allowedHeaders: ['Content-Type'],
+    credentials: true
 }));
 
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
-
-// Проверка подключения к БД
-const checkDatabaseConnection = async () => {
-    try {
-        await sequelize.authenticate();
-        console.log('Database connection established');
-
-        if (process.env.DB_SYNC === 'true') {
-            await sequelize.sync({ alter: true });
-            console.log('Database synchronized');
-        }
-    } catch (error) {
-        console.error('Database connection error:', error);
-        process.exit(1);
-    }
-};
 
 // No-cache middleware
 const noCacheMiddleware = (req: Request, res: Response, next: NextFunction) => {
@@ -52,17 +36,22 @@ interface NodeError extends Error {
 
 // Запуск сервера
 const startServer = async () => {
-    await checkDatabaseConnection();
+    try {
+        await initializeDatabase();
 
-    const PORT = process.env.PORT || 5001;
-    app.listen(PORT, () => {
-        console.log(`Server running on port ${PORT}`);
-    }).on('error', (err: NodeError) => {
-        if (err.code === 'EADDRINUSE') {
-            console.error(`Port ${PORT} is already in use`);
-            process.exit(1);
-        }
-    });
+        const PORT = process.env.PORT || 5001;
+        app.listen(PORT, () => {
+            console.log(`Server running on port ${PORT}`);
+        }).on('error', (err: NodeError) => {
+            if (err.code === 'EADDRINUSE') {
+                console.error(`Port ${PORT} is already in use`);
+                process.exit(1);
+            }
+        });
+    } catch (error) {
+        console.error('Failed to start server:', error);
+        process.exit(1);
+    }
 };
 
 startServer();
