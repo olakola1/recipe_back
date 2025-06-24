@@ -14,7 +14,7 @@ export const toggleFavorite = async (req: Request, res: Response) => {
         recipe.isFavorite = isFavorite;
         await recipe.save();
 
-        res.json(recipe); // Возвращаем обновленный рецепт
+        res.json(recipe);
     } catch (error) {
         console.error('Error toggling favorite:', error);
         res.status(500).json({ error: 'Server error' });

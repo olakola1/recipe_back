@@ -5,6 +5,7 @@ interface RecipeAttributes {
     id: number;
     title: string;
     ingredients: string;
+    description: string;
     time: number;
     image?: string | null;
     isFavorite: boolean;
@@ -16,6 +17,7 @@ export class Recipe extends Model<RecipeAttributes, RecipeCreationAttributes> im
     public id!: number;
     public title!: string;
     public ingredients!: string;
+    public description!: string;
     public time!: number;
     public image!: string | null;
     public isFavorite!: boolean;
@@ -38,6 +40,13 @@ export class Recipe extends Model<RecipeAttributes, RecipeCreationAttributes> im
                 ingredients: {
                     type: DataTypes.TEXT,
                     allowNull: false,
+                    validate: {
+                        notEmpty: true
+                    }
+                },
+                description: {
+                    type: DataTypes.TEXT,
+                    allowNull: true,
                     validate: {
                         notEmpty: true
                     }

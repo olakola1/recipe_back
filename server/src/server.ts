@@ -1,16 +1,14 @@
 import express, { Request, Response, NextFunction } from 'express';
 import cors from 'cors';
-import path from 'path';
 import { sequelize, initializeDatabase } from './db/db';
 import router from './routes/recipe';
 
 const app = express();
 
-// Middleware
 app.use(cors({
     origin: [
-        'http://localhost:5173', // Локальная разработка
-        'https://recipe-font.vercel.app' // Ваш домен на Vercel
+        'http://localhost:5173',
+        'https://recipe-font.vercel.app'
     ],
     methods: ['GET', 'POST', 'PATCH', 'DELETE'],
     allowedHeaders: ['Content-Type'],
@@ -20,7 +18,6 @@ app.use(cors({
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
-// No-cache middleware
 const noCacheMiddleware = (req: Request, res: Response, next: NextFunction) => {
     res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, private');
     res.setHeader('Pragma', 'no-cache');
@@ -28,16 +25,13 @@ const noCacheMiddleware = (req: Request, res: Response, next: NextFunction) => {
     next();
 };
 
-// Routes
 app.get('/api/recipes', noCacheMiddleware);
 app.use('/api', router);
 
-// Error handling
 interface NodeError extends Error {
     code?: string;
 }
 
-// Запуск сервера
 const startServer = async () => {
     try {
         await initializeDatabase();

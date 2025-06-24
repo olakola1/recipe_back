@@ -3,15 +3,16 @@ import { Recipe } from '../model/Recipe';
 
 export const createRecipe = async (req: Request, res: Response) => {
     try {
-        const { title, ingredients, time, image } = req.body;
+        const { title, ingredients, description, time, image } = req.body;
 
-        if (!title || !ingredients || !time) {
+        if (!title || !ingredients || !description || !time) {
             return res.status(400).json({ error: 'Missing required fields' });
         }
 
         const recipe = await Recipe.create({
             title,
             ingredients,
+            description,
             time,
             image: image || null
         });
