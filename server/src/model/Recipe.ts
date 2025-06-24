@@ -61,9 +61,6 @@ export class Recipe extends Model<RecipeAttributes, RecipeCreationAttributes> im
                 image: {
                     type: DataTypes.TEXT,
                     allowNull: true,
-                    validate: {
-                        isUrl: true
-                    }
                 },
                 isFavorite: {
                     type: DataTypes.BOOLEAN,
